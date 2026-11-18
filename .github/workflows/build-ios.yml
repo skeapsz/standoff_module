@@ -43,7 +43,7 @@ jobs:
             -std=c++17 -fobjc-arc -O2 \
             -dynamiclib -lobjc \
             -install_name @executable_path/Frameworks/GlowESP.framework/GlowESP \
-            -framework Foundation -framework UIKit -framework QuartzCore -framework Metal \
+            -framework Foundation -framework UIKit -framework QuartzCore -framework Metal -framework CoreGraphics \
             -fuse-ld=lld \
             src/Overlay.mm src/Runtime.mm -o build/GlowESP
 
@@ -60,7 +60,7 @@ jobs:
             -std=c++17 -fobjc-arc -O2 -DGLOW_DEV_BRIDGE=1 \
             -dynamiclib -lobjc \
             -install_name @executable_path/Frameworks/GlowESP.framework/GlowESP \
-            -framework Foundation -framework UIKit -framework QuartzCore -framework Metal \
+            -framework Foundation -framework UIKit -framework QuartzCore -framework Metal -framework CoreGraphics \
             -fuse-ld=lld \
             src/Overlay.mm src/Runtime.mm -o build/dev/GlowESP
 
