@@ -170,7 +170,7 @@ static void bridgePoll(){
     UIWindowScene* scene=self.view.window.windowScene;
     UIScreen* screen=scene?scene.screen:UIScreen.mainScreen;
     BOOL captured=screen.isCaptured;
-    if(@available(iOS 17.0,*)){if(scene)captured=captured||(scene.traitCollection.sceneCaptureState==UISceneCaptureStateActive);}
+   // if(@available(iOS 17.0,*)){if(scene)captured=captured||(scene.traitCollection.sceneCaptureState==UISceneCaptureStateActive);}
     BOOL active=UIApplication.sharedApplication.applicationState==UIApplicationStateActive;
     runtime.setVisualsAllowed(self.view.window&&active&&!captured);
     self.view.hidden=captured||!active;
