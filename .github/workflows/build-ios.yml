@@ -24,7 +24,7 @@ jobs:
         run: ./tests/package-smoke.ps1
 
   build:
-    runs-on: macos-13
+    runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
