@@ -24,22 +24,21 @@ jobs:
         run: ./tests/package-smoke.ps1
 
   build:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
+    runs-on: macos-13
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download iOS SDK
+      - name: Show Apple toolchain
         run: |
-          wget -q https://github.com/Tonwalter888/iOS-SDKs/archive/refs/heads/main.zip
-          unzip -q main.zip
-          mv iOS-SDKs-main/iPhoneOS17.5.sdk ./iPhoneOS17.5.sdk
+          xcodebuild -version
+          xcrun --sdk iphoneos --show-sdk-version
 
       - name: Build arm64 framework
         run: |
           mkdir -p build
           clang++ -target arm64-apple-ios15.0 \
-            -isysroot ./iPhoneOS17.5.sdk \
+            -isysroot $(xcrun --sdk iphoneos --show-sdk-path) \
             -std=c++17 -fobjc-arc -O2 \
             -dynamiclib -lobjc \
             -install_name @executable_path/Frameworks/GlowESP.framework/GlowESP \
@@ -56,7 +55,7 @@ jobs:
         run: |
           mkdir -p build/dev
           clang++ -target arm64-apple-ios15.0 \
-            -isysroot ./iPhoneOS17.5.sdk \
+            -isysroot $(xcrun --sdk iphoneos --show-sdk-path) \
             -std=c++17 -fobjc-arc -O2 -DGLOW_DEV_BRIDGE=1 \
             -dynamiclib -lobjc \
             -install_name @executable_path/Frameworks/GlowESP.framework/GlowESP \
@@ -66,8 +65,9 @@ jobs:
 
       - name: Validate framework
         run: |
-          python3 -c "import plistlib; plistlib.load(open('Info.plist', 'rb'))"
-          file build/GlowESP | grep -q "Mach-O 64-bit dynamically linked shared library arm64"
+          plutil -lint Info.plist
+          xcrun lipo build/GlowESP -verify_arch arm64
+          xcrun otool -L build/GlowESP
 
       - name: Package artifact
         run: |
